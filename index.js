@@ -9,7 +9,6 @@ import cors from "cors";
 import { app,server } from "./socket/socket.js";
 dotenv.config({});
 
- 
 const PORT = process.env.PORT || 5000;
 
 // middleware
@@ -30,6 +29,6 @@ app.use("/api/v1/message",messageRoute);
 
 server.listen(PORT, ()=>{
     connectDB();
-    console.log(`Server listen at prot ${PORT}`);
+    console.log(`Server listen at Port ${PORT}`);
 });
 

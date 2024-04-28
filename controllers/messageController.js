@@ -25,8 +25,6 @@ export const sendMessage = async (req,res) => {
         if(newMessage){
             gotConversation.messages.push(newMessage._id);
         };
-        
-
         await Promise.all([gotConversation.save(), newMessage.save()]);
          
         // SOCKET IO
@@ -41,6 +39,45 @@ export const sendMessage = async (req,res) => {
         console.log(error);
     }
 }
+
+export const updateMessage = async(req,res) => {
+    try{
+        const senderId = req.id
+        const receiverId= req.params.id
+        const id = req.params.msg_id
+        const {message} = req.body
+        const data = new Message({
+            _id: id,
+            senderId: senderId,
+            receiverId: receiverId,
+            message: message,
+          });
+
+        
+        const result = await Message.updateOne({"_id": id}, data)
+        // if(newMessage){
+        //     gotConversation.messages.push(newMessage._id);
+        // };
+        
+        const conversation = await Conversation.findOne({
+            participants:{$all : [senderId, receiverId]}
+        }).populate("messages");
+        return res.status(200).json(conversation?.messages.reverse()[0]);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const removeMessage = async(req,res) => {
+    try{
+        const senderId = req.uid
+        const receiverId= req.params.uid
+        const messageId = req.params.msg_id
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export const getMessage = async (req,res) => {
     try {
         const receiverId = req.params.id;
@@ -53,3 +90,4 @@ export const getMessage = async (req,res) => {
         console.log(error);
     }
 }
+
